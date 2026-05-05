@@ -43,38 +43,37 @@ def compiled_filter_prime_numbers() -> ctypes.CDLL:
             pytest.fail(f"Failed to compile solution.c\n\n{compiler_output}")
 
         library = ctypes.CDLL(str(library_path))
-        library.filterPrimes.argtypes = [
-            ctypes.POINTER(ctypes.c_int),
-            ctypes.c_int,
-            ctypes.POINTER(ctypes.c_int),
-        ]
+        library.filterPrimes.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_int]
         library.filterPrimes.restype = ctypes.POINTER(ctypes.c_int)
         yield library
 
 
 def run_filter_primes(
     compiled_filter_prime_numbers: ctypes.CDLL, nums: list[int]
-) -> tuple[object, int]:
+) -> object:
     nums_array = (ctypes.c_int * max(1, len(nums)))(*nums) if nums else (ctypes.c_int * 1)()
-    return_size = ctypes.c_int(0)
-    result_ptr = compiled_filter_prime_numbers.filterPrimes(
-        nums_array, len(nums), ctypes.byref(return_size)
-    )
-    return result_ptr, return_size.value
+    return compiled_filter_prime_numbers.filterPrimes(nums_array, len(nums))
 
 
-def assert_valid_filter_primes(
-    nums: list[int], expected: list[int], result_ptr: object, return_size: int
-) -> None:
-    assert return_size == len(
-        expected
-    ), f"Expected returnSize={len(expected)}, got returnSize={return_size}"
+def read_result_values(result_ptr: object) -> list[int]:
+    if not result_ptr:
+        return []
 
-    if return_size == 0:
-        return
+    values: list[int] = []
+    index = 0
 
-    assert result_ptr, "Function returned NULL even though primes were expected"
-    result = [result_ptr[index] for index in range(return_size)]
+    while True:
+        value = result_ptr[index]
+        if value == -1:
+            break
+        values.append(value)
+        index += 1
+
+    return values
+
+
+def assert_valid_filter_primes(nums: list[int], expected: list[int], result_ptr: object) -> None:
+    result = read_result_values(result_ptr)
     assert result == expected, f"Expected {expected!r}, got {result!r}"
 
 
@@ -114,15 +113,15 @@ def test_filter_primes(
     nums: list[int],
     expected: list[int],
 ) -> None:
-    result_ptr, return_size = run_filter_primes(compiled_filter_prime_numbers, nums)
-    assert_valid_filter_primes(nums, expected, result_ptr, return_size)
+    result_ptr = run_filter_primes(compiled_filter_prime_numbers, nums)
+    assert_valid_filter_primes(nums, expected, result_ptr)
 
 
 def test_filter_primes_handles_empty_input(
     compiled_filter_prime_numbers: ctypes.CDLL,
 ) -> None:
-    result_ptr, return_size = run_filter_primes(compiled_filter_prime_numbers, [])
-    assert_valid_filter_primes([], [], result_ptr, return_size)
+    result_ptr = run_filter_primes(compiled_filter_prime_numbers, [])
+    assert_valid_filter_primes([], [], result_ptr)
 
 
 def test_filter_primes_keeps_duplicate_prime_values(
@@ -131,6 +130,6 @@ def test_filter_primes_keeps_duplicate_prime_values(
     nums = [5, 5, 4, 5, 6, 5]
     expected = [5, 5, 5, 5]
 
-    result_ptr, return_size = run_filter_primes(compiled_filter_prime_numbers, nums)
+    result_ptr = run_filter_primes(compiled_filter_prime_numbers, nums)
 
-    assert_valid_filter_primes(nums, expected, result_ptr, return_size)
+    assert_valid_filter_primes(nums, expected, result_ptr)

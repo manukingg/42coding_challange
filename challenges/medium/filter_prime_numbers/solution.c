@@ -1,17 +1,17 @@
 #include <stdlib.h>
 
-int* filterPrimes(int* nums, int numsSize, int* returnSize) {
+int* filterPrimes(int* nums, int numsSize) {
     (void)nums;
     (void)numsSize;
-
-    *returnSize = 0;
 
     /*
      * Return a dynamically allocated array containing only the prime values
      * from nums, preserving their original order.
      *
-     * If no prime values are found, return NULL or an empty allocated array
-     * and keep *returnSize equal to 0.
+     * Terminate the returned array with -1.
+     *
+     * If no prime values are found, return NULL or an array whose first value
+     * is -1.
      */
 
     return NULL;

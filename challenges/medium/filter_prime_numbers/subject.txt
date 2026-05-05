@@ -14,7 +14,7 @@ If no prime numbers are found, return an empty array.
 ## Function Signature
 
 ```c
-int* filterPrimes(int* nums, int numsSize, int* returnSize);
+int* filterPrimes(int* nums, int numsSize);
 ```
 
 ## Examples
@@ -40,5 +40,8 @@ Output: [11, 13, 17]
   `1` and the number itself.
 - Negative numbers, `0`, and `1` are not prime.
 - Keep the output order the same as the input order.
-- Follow the standard LeetCode C pattern: return a dynamically allocated array
-  and set `*returnSize` to the number of prime values in the result.
+- Return a dynamically allocated array of prime numbers.
+- Terminate the returned array with `-1` so the caller can detect where the
+  result ends.
+- If no prime numbers are found, return `NULL` or an array whose first value is
+  `-1`.
