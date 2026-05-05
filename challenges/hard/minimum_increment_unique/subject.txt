@@ -1,0 +1,36 @@
+# Minimum Increment Unique
+
+Difficulty: Hard
+
+## Problem
+
+You are given an integer array `nums`.
+
+In one move, you may pick any index and increase `nums[i]` by `1`.
+
+Return the minimum number of moves required to make every value in the array
+unique.
+
+## Function Signature
+
+```c
+int minIncrementForUnique(int* nums, int numsSize);
+```
+
+## Examples
+
+```text
+Input: nums = [1, 2, 2]
+Output: 1
+```
+
+```text
+Input: nums = [3, 2, 1, 2, 1, 7]
+Output: 6
+```
+
+## Notes
+
+- You may only increment values, never decrement them.
+- The returned value is the total number of `+1` operations performed.
+- The input array may contain duplicates, zeros, and negative values.

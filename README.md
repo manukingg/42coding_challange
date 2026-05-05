@@ -66,8 +66,9 @@ Each challenge folder contains:
 ## Current Challenges
 
 - `easy/two_sum`
-- `easy/merge_sorted_array`
 - `easy/check_one_string_swap`
+- `medium/merge_sorted_array`
+- `hard/minimum_increment_unique`
 
 ## Student Workflow
 
