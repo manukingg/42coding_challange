@@ -6,7 +6,6 @@ from pathlib import Path
 
 TIME_LIMIT_SECONDS = 2.0
 GREEN = "\033[32m"
-YELLOW = "\033[33m"
 RED = "\033[31m"
 RESET = "\033[0m"
 
@@ -105,9 +104,6 @@ def classify_failure(returncode: int, output: str) -> str:
 def colorize_status(status: str) -> str:
     if status == "Accepted":
         return f"{GREEN}{status}{RESET}"
-
-    if status == "Wrong Answer":
-        return f"{YELLOW}{status}{RESET}"
 
     return f"{RED}{status}{RESET}"
 
