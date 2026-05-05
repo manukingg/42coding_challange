@@ -33,8 +33,9 @@ cd challenges/easy/two_sum
 uv run grademe
 ```
 
-This also writes the full test output and tracebacks to `grademe.log` in the
-current directory.
+On success, `grademe` prints a short success message.
+On failure, it prints a short failure message and writes the full traceback to a
+file like `two_sum_traceback` in the current directory.
 
 ## Structure
 

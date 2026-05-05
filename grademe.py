@@ -32,9 +32,7 @@ def main() -> int:
         return 1
 
     test_file = challenge_dir / "test_solution.py"
-    output_file = current_dir / "grademe.log"
-    print(f"Running tests for {challenge_dir.relative_to(Path.cwd().anchor or challenge_dir)}")
-    print(f"Writing test output to {output_file.name}")
+    traceback_file = current_dir / f"{challenge_dir.name}_traceback"
 
     try:
         result = subprocess.run(
@@ -42,12 +40,14 @@ def main() -> int:
             capture_output=True,
             text=True,
         )
-        if result.stdout:
-            print(result.stdout, end="")
-        if result.stderr:
-            print(result.stderr, end="", file=sys.stderr)
-
-        output_file.write_text(result.stdout + result.stderr)
+        output = result.stdout + result.stderr
+        if result.returncode == 0:
+            if traceback_file.exists():
+                traceback_file.unlink()
+            print("Solution succeeded.")
+        else:
+            traceback_file.write_text(output)
+            print(f"Solution failed. Traceback written to {traceback_file.name}.")
         return result.returncode
     finally:
         clean_pycache(challenge_dir)
