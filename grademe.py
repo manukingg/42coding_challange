@@ -28,21 +28,29 @@ def build_failure_report(output: str) -> str:
     for raw_line in output.splitlines():
         line = raw_line.rstrip()
 
-        if "::" in line and (" PASSED" in line or " FAILED" in line or " ERROR" in line):
-            test_name, _, outcome = line.rpartition(" ")
-            test_name = test_name.strip()
-            outcome = outcome.strip()
-            if outcome == "PASSED":
-                test_results.append((test_name, "Accepted"))
-            elif outcome == "FAILED":
-                test_results.append((test_name, "Wrong Answer"))
-                failed_tests.append(test_name)
-            elif outcome == "ERROR":
-                test_results.append((test_name, "Runtime Error"))
-                failed_tests.append(test_name)
+        if "::" not in line:
+            continue
+
+        normalized_name = line.split("::", 1)[1].strip()
+
+        if " PASSED" in line:
+            test_name = normalized_name.split(" PASSED", 1)[0].strip()
+            test_results.append((test_name, "Accepted"))
+            continue
+
+        if " FAILED" in line:
+            test_name = normalized_name.split(" FAILED", 1)[0].strip()
+            test_results.append((test_name, "Wrong Answer"))
+            failed_tests.append(test_name)
+            continue
+
+        if " ERROR" in line:
+            test_name = normalized_name.split(" ERROR", 1)[0].strip()
+            test_results.append((test_name, "Runtime Error"))
+            failed_tests.append(test_name)
 
     if not test_results:
-        return output.strip() or "Tests failed, but no detailed failure message was captured."
+        return "Test results:\n\n- all tests: Failed"
 
     report_lines = ["Test results:", ""]
     for test_name, status in test_results:
@@ -51,7 +59,7 @@ def build_failure_report(output: str) -> str:
     if failed_tests:
         report_lines.append("")
         report_lines.append("Failed tests:")
-        for failed_test in failed_tests:
+        for failed_test in dict.fromkeys(failed_tests):
             report_lines.append(f"- {failed_test}")
 
     return "\n".join(report_lines)
@@ -132,10 +140,8 @@ def main() -> int:
         else:
             status = classify_failure(result.returncode, output)
             report_body = build_failure_report(output)
-            if report_body == output.strip() or report_body.startswith("Tests failed, but no detailed"):
+            if report_body.strip() == "Test results:\n\n- all tests: Failed":
                 report = f"Test results:\n\n- all tests: {status}\n"
-                if output.strip():
-                    report += f"\nCaptured output:\n{output.strip()}\n"
             else:
                 report = report_body + "\n"
             traceback_file.write_text(report)
