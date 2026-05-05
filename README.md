@@ -26,6 +26,13 @@ Run a single challenge:
 uv run pytest challenges/easy/two_sum/test_solution.py
 ```
 
+Or, from inside a challenge folder:
+
+```bash
+cd challenges/easy/two_sum
+uv run grademe
+```
+
 ## Structure
 
 ```text
@@ -44,3 +51,13 @@ Each challenge folder contains:
 ## Current Challenges
 
 - `easy/two_sum`
+
+## Student Workflow
+
+```bash
+git clone https://github.com/manukingg/42coding_challange.git
+cd 42coding_challange
+uv sync
+cd challenges/easy/two_sum
+uv run grademe
+```
