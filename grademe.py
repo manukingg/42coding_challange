@@ -5,6 +5,10 @@ import sys
 from pathlib import Path
 
 TIME_LIMIT_SECONDS = 2.0
+GREEN = "\033[32m"
+YELLOW = "\033[33m"
+RED = "\033[31m"
+RESET = "\033[0m"
 
 
 def find_challenge_dir(start: Path) -> Path | None:
@@ -98,6 +102,16 @@ def classify_failure(returncode: int, output: str) -> str:
     return "Failed"
 
 
+def colorize_status(status: str) -> str:
+    if status == "Accepted":
+        return f"{GREEN}{status}{RESET}"
+
+    if status == "Wrong Answer":
+        return f"{YELLOW}{status}{RESET}"
+
+    return f"{RED}{status}{RESET}"
+
+
 def main() -> int:
     current_dir = Path.cwd().resolve()
     challenge_dir = find_challenge_dir(current_dir)
@@ -129,14 +143,17 @@ def main() -> int:
             if timeout_output.strip():
                 report += "\n\nCaptured output:\n" + timeout_output.strip()
             traceback_file.write_text(report + "\n")
-            print(f"Time Limit Exceeded. Details written to {traceback_file.name}.")
+            print(
+                f"{colorize_status('Time Limit Exceeded')}. "
+                f"Details written to {traceback_file.name}."
+            )
             return 1
 
         output = result.stdout + result.stderr
         if result.returncode == 0:
             if traceback_file.exists():
                 traceback_file.unlink()
-            print("Accepted.")
+            print(f"{colorize_status('Accepted')}.")
         else:
             status = classify_failure(result.returncode, output)
             report_body = build_failure_report(output)
@@ -145,7 +162,7 @@ def main() -> int:
             else:
                 report = report_body + "\n"
             traceback_file.write_text(report)
-            print(f"{status}. Details written to {traceback_file.name}.")
+            print(f"{colorize_status(status)}. Details written to {traceback_file.name}.")
         return result.returncode
     finally:
         clean_pycache(challenge_dir)
