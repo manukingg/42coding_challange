@@ -1,4 +1,4 @@
-void merge(int* nums1, int m, int* nums2, int n) {
+void merge_sorted_array(int* nums1, int m, int* nums2, int n) {
     (void)nums1;
     (void)m;
     (void)nums2;

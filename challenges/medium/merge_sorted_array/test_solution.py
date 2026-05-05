@@ -43,13 +43,13 @@ def compiled_merge_sorted_array() -> ctypes.CDLL:
             pytest.fail(f"Failed to compile solution.c\n\n{compiler_output}")
 
         library = ctypes.CDLL(str(library_path))
-        library.merge.argtypes = [
+        library.merge_sorted_array.argtypes = [
             ctypes.POINTER(ctypes.c_int),
             ctypes.c_int,
             ctypes.POINTER(ctypes.c_int),
             ctypes.c_int,
         ]
-        library.merge.restype = None
+        library.merge_sorted_array.restype = None
         yield library
 
 
@@ -63,7 +63,7 @@ def run_merge(
     nums1_array = (ctypes.c_int * len(nums1))(*nums1)
     nums2_array = (ctypes.c_int * max(1, len(nums2)))(*nums2) if nums2 else (ctypes.c_int * 1)()
 
-    compiled_merge_sorted_array.merge(nums1_array, m, nums2_array, n)
+    compiled_merge_sorted_array.merge_sorted_array(nums1_array, m, nums2_array, n)
 
     return list(nums1_array), list(nums2_array)[: len(nums2)]
 

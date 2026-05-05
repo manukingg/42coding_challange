@@ -43,31 +43,17 @@ def compiled_two_sum() -> ctypes.CDLL:
             pytest.fail(f"Failed to compile solution.c\n\n{compiler_output}")
 
         library = ctypes.CDLL(str(library_path))
-        library.twoSum.argtypes = [
-            ctypes.POINTER(ctypes.c_int),
-            ctypes.c_int,
-            ctypes.c_int,
-            ctypes.POINTER(ctypes.c_int),
-        ]
-        library.twoSum.restype = ctypes.POINTER(ctypes.c_int)
+        library.two_sum.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_int, ctypes.c_int]
+        library.two_sum.restype = ctypes.POINTER(ctypes.c_int)
         yield library
 
 
-def run_two_sum(
-    compiled_two_sum: ctypes.CDLL, nums: list[int], target: int
-) -> tuple[object, int]:
+def run_two_sum(compiled_two_sum: ctypes.CDLL, nums: list[int], target: int) -> object:
     nums_array = (ctypes.c_int * len(nums))(*nums)
-    return_size = ctypes.c_int(0)
-    result_ptr = compiled_two_sum.twoSum(
-        nums_array, len(nums), target, ctypes.byref(return_size)
-    )
-    return result_ptr, return_size.value
+    return compiled_two_sum.two_sum(nums_array, len(nums), target)
 
 
-def assert_valid_two_sum(
-    nums: list[int], target: int, result_ptr: object, return_size: int
-) -> None:
-    assert return_size == 2, f"Expected returnSize=2, got returnSize={return_size}"
+def assert_valid_two_sum(nums: list[int], target: int, result_ptr: object) -> None:
     assert result_ptr, "Function returned NULL instead of an array of two indices"
 
     result = [result_ptr[0], result_ptr[1]]
@@ -126,8 +112,8 @@ def assert_valid_two_sum(
 def test_two_sum_returns_valid_indices(
     compiled_two_sum: ctypes.CDLL, nums: list[int], target: int
 ) -> None:
-    result_ptr, return_size = run_two_sum(compiled_two_sum, nums, target)
-    assert_valid_two_sum(nums, target, result_ptr, return_size)
+    result_ptr = run_two_sum(compiled_two_sum, nums, target)
+    assert_valid_two_sum(nums, target, result_ptr)
 
 
 def test_two_sum_does_not_mutate_input(compiled_two_sum: ctypes.CDLL) -> None:
@@ -145,5 +131,5 @@ def test_two_sum_prefers_correctness_over_order(
     nums = [1, 9, 5, 7]
     target = 12
 
-    result_ptr, return_size = run_two_sum(compiled_two_sum, nums, target)
-    assert_valid_two_sum(nums, target, result_ptr, return_size)
+    result_ptr = run_two_sum(compiled_two_sum, nums, target)
+    assert_valid_two_sum(nums, target, result_ptr)

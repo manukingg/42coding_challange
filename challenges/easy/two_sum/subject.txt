@@ -16,7 +16,7 @@ You can return the indices in any order.
 ## Function Signature
 
 ```c
-int* twoSum(int* nums, int numsSize, int target, int* returnSize);
+int* two_sum(int* nums, int numsSize, int target);
 ```
 
 ## Examples
@@ -40,5 +40,4 @@ Output: [0, 1]
 
 - Return indices, not the values themselves.
 - Your solution should work with duplicate numbers.
-- Follow the standard LeetCode C pattern: return a dynamically allocated array of
-  two integers and set `*returnSize = 2`.
+- Return a dynamically allocated array of exactly two indices.

@@ -14,7 +14,7 @@ If no prime numbers are found, return an empty array.
 ## Function Signature
 
 ```c
-int* filterPrimes(int* nums, int numsSize);
+int* filter_prime_numbers(int* nums, int numsSize);
 ```
 
 ## Examples

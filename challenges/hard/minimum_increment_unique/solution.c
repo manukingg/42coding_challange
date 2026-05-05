@@ -1,4 +1,4 @@
-int minIncrementForUnique(int* nums, int numsSize) {
+int minimum_increment_unique(int* nums, int numsSize) {
     (void)nums;
     (void)numsSize;
 

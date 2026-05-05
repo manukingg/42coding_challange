@@ -1,6 +1,6 @@
 #include <stdbool.h>
 
-bool areAlmostEqual(char* s1, char* s2) {
+bool check_one_string_swap(char* s1, char* s2) {
     (void)s1;
     (void)s2;
 

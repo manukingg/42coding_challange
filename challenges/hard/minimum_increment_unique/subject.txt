@@ -14,7 +14,7 @@ unique.
 ## Function Signature
 
 ```c
-int minIncrementForUnique(int* nums, int numsSize);
+int minimum_increment_unique(int* nums, int numsSize);
 ```
 
 ## Examples

@@ -43,11 +43,11 @@ def compiled_minimum_increment_unique() -> ctypes.CDLL:
             pytest.fail(f"Failed to compile solution.c\n\n{compiler_output}")
 
         library = ctypes.CDLL(str(library_path))
-        library.minIncrementForUnique.argtypes = [
+        library.minimum_increment_unique.argtypes = [
             ctypes.POINTER(ctypes.c_int),
             ctypes.c_int,
         ]
-        library.minIncrementForUnique.restype = ctypes.c_int
+        library.minimum_increment_unique.restype = ctypes.c_int
         yield library
 
 
@@ -56,7 +56,7 @@ def run_min_increment_for_unique(
     nums: list[int],
 ) -> tuple[int, list[int]]:
     nums_array = (ctypes.c_int * len(nums))(*nums)
-    result = compiled_minimum_increment_unique.minIncrementForUnique(
+    result = compiled_minimum_increment_unique.minimum_increment_unique(
         nums_array,
         len(nums),
     )

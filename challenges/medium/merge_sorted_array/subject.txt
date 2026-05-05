@@ -20,7 +20,7 @@ return anything.
 ## Function Signature
 
 ```c
-void merge(int* nums1, int m, int* nums2, int n);
+void merge_sorted_array(int* nums1, int m, int* nums2, int n);
 ```
 
 ## Examples

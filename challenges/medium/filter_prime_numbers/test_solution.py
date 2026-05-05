@@ -43,8 +43,8 @@ def compiled_filter_prime_numbers() -> ctypes.CDLL:
             pytest.fail(f"Failed to compile solution.c\n\n{compiler_output}")
 
         library = ctypes.CDLL(str(library_path))
-        library.filterPrimes.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_int]
-        library.filterPrimes.restype = ctypes.POINTER(ctypes.c_int)
+        library.filter_prime_numbers.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_int]
+        library.filter_prime_numbers.restype = ctypes.POINTER(ctypes.c_int)
         yield library
 
 
@@ -52,7 +52,7 @@ def run_filter_primes(
     compiled_filter_prime_numbers: ctypes.CDLL, nums: list[int]
 ) -> object:
     nums_array = (ctypes.c_int * max(1, len(nums)))(*nums) if nums else (ctypes.c_int * 1)()
-    return compiled_filter_prime_numbers.filterPrimes(nums_array, len(nums))
+    return compiled_filter_prime_numbers.filter_prime_numbers(nums_array, len(nums))
 
 
 def read_result_values(result_ptr: object) -> list[int]:

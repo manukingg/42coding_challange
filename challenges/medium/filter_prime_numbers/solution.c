@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-int* filterPrimes(int* nums, int numsSize) {
+int* filter_prime_numbers(int* nums, int numsSize) {
     (void)nums;
     (void)numsSize;
 

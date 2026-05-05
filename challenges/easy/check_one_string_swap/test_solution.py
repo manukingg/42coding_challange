@@ -43,8 +43,8 @@ def compiled_check_one_string_swap() -> ctypes.CDLL:
             pytest.fail(f"Failed to compile solution.c\n\n{compiler_output}")
 
         library = ctypes.CDLL(str(library_path))
-        library.areAlmostEqual.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
-        library.areAlmostEqual.restype = ctypes.c_bool
+        library.check_one_string_swap.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
+        library.check_one_string_swap.restype = ctypes.c_bool
         yield library
 
 
@@ -56,7 +56,7 @@ def run_are_almost_equal(
     s1_bytes = s1.encode("utf-8")
     s2_bytes = s2.encode("utf-8")
     return bool(
-        compiled_check_one_string_swap.areAlmostEqual(
+        compiled_check_one_string_swap.check_one_string_swap(
             ctypes.c_char_p(s1_bytes), ctypes.c_char_p(s2_bytes)
         )
     )
