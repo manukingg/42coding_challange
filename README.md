@@ -50,7 +50,7 @@ challenges/
 
 Each challenge folder contains:
 
-- `README.md`: problem statement and examples
+- `subject.txt`: problem statement and examples
 - `solution.c`: starter file students edit
 - `test_solution.py`: automated checks that compile and validate the C solution
 
