@@ -57,6 +57,7 @@ Each challenge folder contains:
 ## Current Challenges
 
 - `easy/two_sum`
+- `easy/merge_sorted_array`
 
 ## Student Workflow
 

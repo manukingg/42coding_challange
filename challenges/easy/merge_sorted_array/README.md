@@ -1,0 +1,47 @@
+# Merge Sorted Array
+
+Difficulty: Easy
+
+## Problem
+
+You are given two integer arrays sorted in non-decreasing order.
+
+- `nums1` has length `m + n`
+- the first `m` elements of `nums1` are valid sorted values
+- the last `n` elements of `nums1` are placeholders
+- `nums2` has `n` valid sorted values
+
+Merge the values from `nums2` into `nums1` so that `nums1` becomes one sorted
+array in non-decreasing order.
+
+The merge must be done in place by modifying `nums1`. The function does not
+return anything.
+
+## Function Signature
+
+```c
+void merge(int* nums1, int m, int* nums2, int n);
+```
+
+## Examples
+
+```text
+Input: nums1 = [1, 2, 3, 0, 0, 0], m = 3, nums2 = [2, 5, 6], n = 3
+Output: nums1 = [1, 2, 2, 3, 5, 6]
+```
+
+```text
+Input: nums1 = [1], m = 1, nums2 = [], n = 0
+Output: nums1 = [1]
+```
+
+```text
+Input: nums1 = [0], m = 0, nums2 = [1], n = 1
+Output: nums1 = [1]
+```
+
+## Notes
+
+- Modify `nums1` directly.
+- Keep the final result sorted in non-decreasing order.
+- `nums2` should not be modified.
