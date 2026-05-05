@@ -12,6 +12,13 @@ def find_challenge_dir(start: Path) -> Path | None:
     return None
 
 
+def clean_pycache(root: Path) -> None:
+    for pycache_dir in root.rglob("__pycache__"):
+        for child in pycache_dir.iterdir():
+            child.unlink()
+        pycache_dir.rmdir()
+
+
 def main() -> int:
     current_dir = Path.cwd().resolve()
     challenge_dir = find_challenge_dir(current_dir)
@@ -27,8 +34,11 @@ def main() -> int:
     test_file = challenge_dir / "test_solution.py"
     print(f"Running tests for {challenge_dir.relative_to(Path.cwd().anchor or challenge_dir)}")
 
-    result = subprocess.run([sys.executable, "-m", "pytest", str(test_file)])
-    return result.returncode
+    try:
+        result = subprocess.run([sys.executable, "-m", "pytest", str(test_file)])
+        return result.returncode
+    finally:
+        clean_pycache(challenge_dir)
 
 
 if __name__ == "__main__":
