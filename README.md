@@ -14,6 +14,12 @@ uv sync
 
 ## Run Tests
 
+Clean Python cache folders anywhere in the repo:
+
+```bash
+uv run clean
+```
+
 Run all tests:
 
 ```bash
@@ -38,6 +44,9 @@ On failure, it prints a short status such as `Wrong Answer.`, `Compile Error.`,
 `Runtime Error.`, or `Time Limit Exceeded.` and writes a compact failure report
 to a file like `two_sum_traceback` in the current directory. The report is a
 simple per-test status list instead of a raw pytest traceback.
+`grademe` always cleans `__pycache__` after it runs.
+If someone runs other commands directly, such as `uv run pytest`, use
+`uv run clean` afterward if needed.
 
 ## Structure
 
@@ -63,8 +72,8 @@ Each challenge folder contains:
 ## Student Workflow
 
 ```bash
-git clone https://github.com/manukingg/42coding_challange.git
-cd 42coding_challange
+git clone https://github.com/manukingg/42coding_challenge.git
+cd 42coding_challenge
 uv sync
 cd challenges/easy/two_sum
 uv run grademe

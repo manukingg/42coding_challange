@@ -12,10 +12,11 @@ dependencies = [
 ]
 
 [project.scripts]
+clean = "clean:main"
 grademe = "grademe:main"
 
 [tool.setuptools]
-py-modules = ["grademe"]
+py-modules = ["clean", "grademe"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
