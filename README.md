@@ -33,6 +33,9 @@ cd challenges/easy/two_sum
 uv run grademe
 ```
 
+This also writes the full test output and tracebacks to `grademe.log` in the
+current directory.
+
 ## Structure
 
 ```text
