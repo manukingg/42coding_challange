@@ -68,6 +68,7 @@ Each challenge folder contains:
 - `easy/two_sum`
 - `easy/check_one_string_swap`
 - `medium/merge_sorted_array`
+- `medium/filter_prime_numbers`
 - `hard/minimum_increment_unique`
 
 ## Student Workflow
