@@ -1,0 +1,42 @@
+# Check One String Swap
+
+Difficulty: Easy
+
+## Problem
+
+You are given two strings `s1` and `s2` of the same length.
+
+Return `true` if you can make the two strings equal by performing at most one
+swap of two characters in exactly one of the strings. Otherwise, return `false`.
+
+A swap means choosing two positions in one string and exchanging their
+characters.
+
+## Function Signature
+
+```c
+bool areAlmostEqual(char* s1, char* s2);
+```
+
+## Examples
+
+```text
+Input: s1 = "bank", s2 = "kanb"
+Output: true
+```
+
+```text
+Input: s1 = "attack", s2 = "defend"
+Output: false
+```
+
+```text
+Input: s1 = "kelb", s2 = "kelb"
+Output: true
+```
+
+## Notes
+
+- The two strings always have the same length.
+- If the strings are already equal, the answer is `true`.
+- A valid swap can only fix two mismatched positions.
