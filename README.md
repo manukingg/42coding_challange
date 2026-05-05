@@ -34,8 +34,8 @@ uv run grademe
 ```
 
 On success, `grademe` prints a short success message.
-On failure, it prints a short failure message and writes the full traceback to a
-file like `two_sum_traceback` in the current directory.
+On failure, it prints a short failure message and writes a compact failure
+report to a file like `two_sum_traceback` in the current directory.
 
 ## Structure
 

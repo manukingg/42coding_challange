@@ -19,6 +19,50 @@ def clean_pycache(root: Path) -> None:
         pycache_dir.rmdir()
 
 
+def build_failure_report(output: str) -> str:
+    failed_tests: list[str] = []
+    reasons: list[str] = []
+
+    for raw_line in output.splitlines():
+        line = raw_line.rstrip()
+
+        if line.startswith("FAILED "):
+            failed_test = line[len("FAILED ") :].split(" - ", 1)[0].strip()
+            if failed_test and failed_test not in failed_tests:
+                failed_tests.append(failed_test)
+            continue
+
+        if line.startswith("ERROR "):
+            error_name = line[len("ERROR ") :].strip()
+            if error_name and error_name not in failed_tests:
+                failed_tests.append(error_name)
+            continue
+
+        if line.startswith("E       "):
+            reason = line[len("E       ") :].strip()
+            if reason and reason not in reasons:
+                reasons.append(reason)
+
+    if not failed_tests and not reasons:
+        return output.strip() or "Tests failed, but no detailed failure message was captured."
+
+    report_lines = ["Tests failed."]
+
+    if failed_tests:
+        report_lines.append("")
+        report_lines.append("Failed tests:")
+        for failed_test in failed_tests:
+            report_lines.append(f"- {failed_test}")
+
+    if reasons:
+        report_lines.append("")
+        report_lines.append("Why it failed:")
+        for reason in reasons:
+            report_lines.append(f"- {reason}")
+
+    return "\n".join(report_lines)
+
+
 def main() -> int:
     current_dir = Path.cwd().resolve()
     challenge_dir = find_challenge_dir(current_dir)
@@ -36,7 +80,7 @@ def main() -> int:
 
     try:
         result = subprocess.run(
-            [sys.executable, "-m", "pytest", str(test_file)],
+            [sys.executable, "-m", "pytest", "-q", "--tb=short", str(test_file)],
             capture_output=True,
             text=True,
         )
@@ -46,7 +90,7 @@ def main() -> int:
                 traceback_file.unlink()
             print("Solution succeeded.")
         else:
-            traceback_file.write_text(output)
+            traceback_file.write_text(build_failure_report(output) + "\n")
             print(f"Solution failed. Traceback written to {traceback_file.name}.")
         return result.returncode
     finally:
