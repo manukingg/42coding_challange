@@ -15,9 +15,8 @@ You can return the indices in any order.
 
 ## Function Signature
 
-```python
-def two_sum(nums: list[int], target: int) -> list[int]:
-    ...
+```c
+int* twoSum(int* nums, int numsSize, int target, int* returnSize);
 ```
 
 ## Examples
@@ -41,3 +40,5 @@ Output: [0, 1]
 
 - Return indices, not the values themselves.
 - Your solution should work with duplicate numbers.
+- Follow the standard LeetCode C pattern: return a dynamically allocated array of
+  two integers and set `*returnSize = 2`.

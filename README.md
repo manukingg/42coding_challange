@@ -1,11 +1,12 @@
 # Coding Challenge
 
-Python coding challenge environment built around `uv`.
+C coding challenge environment with a Python-based test runner built around `uv`.
 
 ## Setup
 
 1. Install `uv`: https://docs.astral.sh/uv/
-2. Sync the environment:
+2. Make sure `gcc` is installed
+3. Sync the environment:
 
 ```bash
 uv sync
@@ -37,8 +38,8 @@ challenges/
 Each challenge folder contains:
 
 - `README.md`: problem statement and examples
-- `solution.py`: starter file students edit
-- `test_solution.py`: automated checks
+- `solution.c`: starter file students edit
+- `test_solution.py`: automated checks that compile and validate the C solution
 
 ## Current Challenges
 
