@@ -24,9 +24,24 @@ def clean_pycache(root: Path) -> None:
 def build_failure_report(output: str) -> str:
     failed_tests: list[str] = []
     reasons: list[str] = []
+    detail_lines: list[str] = []
+    capture_details = False
 
     for raw_line in output.splitlines():
         line = raw_line.rstrip()
+
+        if line == "=================================== FAILURES ===================================":
+            capture_details = True
+            continue
+
+        if line.startswith("=========================== short test summary info"):
+            capture_details = False
+            continue
+
+        if capture_details:
+            if line.strip():
+                detail_lines.append(line)
+            continue
 
         if line.startswith("FAILED "):
             failed_test = line[len("FAILED ") :].split(" - ", 1)[0].strip()
@@ -61,6 +76,11 @@ def build_failure_report(output: str) -> str:
         report_lines.append("Why it failed:")
         for reason in reasons:
             report_lines.append(f"- {reason}")
+
+    if detail_lines:
+        report_lines.append("")
+        report_lines.append("Failure details:")
+        report_lines.extend(detail_lines)
 
     return "\n".join(report_lines)
 
@@ -116,7 +136,7 @@ def main() -> int:
     try:
         try:
             result = subprocess.run(
-                [sys.executable, "-m", "pytest", "-q", "--tb=short", str(test_file)],
+                [sys.executable, "-m", "pytest", "-vv", "--tb=short", str(test_file)],
                 capture_output=True,
                 text=True,
                 timeout=TIME_LIMIT_SECONDS,
