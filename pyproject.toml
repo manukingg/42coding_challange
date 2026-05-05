@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "coding-challenge"
 version = "0.1.0"
@@ -9,6 +13,9 @@ dependencies = [
 
 [project.scripts]
 grademe = "grademe:main"
+
+[tool.setuptools]
+py-modules = ["grademe"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
