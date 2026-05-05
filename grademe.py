@@ -4,6 +4,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+TIME_LIMIT_SECONDS = 2.0
+
 
 def find_challenge_dir(start: Path) -> Path | None:
     for candidate in [start, *start.parents]:
@@ -63,6 +65,39 @@ def build_failure_report(output: str) -> str:
     return "\n".join(report_lines)
 
 
+def classify_failure(returncode: int, output: str) -> str:
+    lowered = output.lower()
+
+    if "failed to compile solution.c" in lowered:
+        return "Compile Error"
+
+    if returncode < 0:
+        return "Runtime Error"
+
+    if "segmentation fault" in lowered:
+        return "Runtime Error"
+
+    if "function must not mutate input list" in output:
+        return "Wrong Answer"
+
+    if "expected returnsize=2" in output:
+        return "Wrong Answer"
+
+    if "function returned null" in lowered:
+        return "Wrong Answer"
+
+    if "indices must point to two different elements" in lowered:
+        return "Wrong Answer"
+
+    if "out of range for nums=" in lowered:
+        return "Wrong Answer"
+
+    if "expected " in lowered or "assert" in lowered:
+        return "Wrong Answer"
+
+    return "Failed"
+
+
 def main() -> int:
     current_dir = Path.cwd().resolve()
     challenge_dir = find_challenge_dir(current_dir)
@@ -79,19 +114,33 @@ def main() -> int:
     traceback_file = current_dir / f"{challenge_dir.name}_traceback"
 
     try:
-        result = subprocess.run(
-            [sys.executable, "-m", "pytest", "-q", "--tb=short", str(test_file)],
-            capture_output=True,
-            text=True,
-        )
+        try:
+            result = subprocess.run(
+                [sys.executable, "-m", "pytest", "-q", "--tb=short", str(test_file)],
+                capture_output=True,
+                text=True,
+                timeout=TIME_LIMIT_SECONDS,
+            )
+        except subprocess.TimeoutExpired as exc:
+            timeout_output = (exc.stdout or "") + (exc.stderr or "")
+            report = "Time Limit Exceeded\n\n"
+            report += f"The tests did not finish within {TIME_LIMIT_SECONDS:.1f} seconds."
+            if timeout_output.strip():
+                report += "\n\nCaptured output:\n" + timeout_output.strip()
+            traceback_file.write_text(report + "\n")
+            print(f"Time Limit Exceeded. Details written to {traceback_file.name}.")
+            return 1
+
         output = result.stdout + result.stderr
         if result.returncode == 0:
             if traceback_file.exists():
                 traceback_file.unlink()
-            print("Solution succeeded.")
+            print("Accepted.")
         else:
-            traceback_file.write_text(build_failure_report(output) + "\n")
-            print(f"Solution failed. Traceback written to {traceback_file.name}.")
+            status = classify_failure(result.returncode, output)
+            report = f"{status}\n\n{build_failure_report(output)}\n"
+            traceback_file.write_text(report)
+            print(f"{status}. Details written to {traceback_file.name}.")
         return result.returncode
     finally:
         clean_pycache(challenge_dir)

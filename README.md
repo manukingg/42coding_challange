@@ -33,9 +33,10 @@ cd challenges/easy/two_sum
 uv run grademe
 ```
 
-On success, `grademe` prints a short success message.
-On failure, it prints a short failure message and writes a compact failure
-report to a file like `two_sum_traceback` in the current directory.
+On success, `grademe` prints `Accepted.`.
+On failure, it prints a short status such as `Wrong Answer.`, `Compile Error.`,
+`Runtime Error.`, or `Time Limit Exceeded.` and writes a compact failure report
+to a file like `two_sum_traceback` in the current directory.
 
 ## Structure
 
