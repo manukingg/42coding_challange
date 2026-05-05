@@ -22,65 +22,37 @@ def clean_pycache(root: Path) -> None:
 
 
 def build_failure_report(output: str) -> str:
+    test_results: list[tuple[str, str]] = []
     failed_tests: list[str] = []
-    reasons: list[str] = []
-    detail_lines: list[str] = []
-    capture_details = False
 
     for raw_line in output.splitlines():
         line = raw_line.rstrip()
 
-        if line == "=================================== FAILURES ===================================":
-            capture_details = True
-            continue
+        if "::" in line and (" PASSED" in line or " FAILED" in line or " ERROR" in line):
+            test_name, _, outcome = line.rpartition(" ")
+            test_name = test_name.strip()
+            outcome = outcome.strip()
+            if outcome == "PASSED":
+                test_results.append((test_name, "Accepted"))
+            elif outcome == "FAILED":
+                test_results.append((test_name, "Wrong Answer"))
+                failed_tests.append(test_name)
+            elif outcome == "ERROR":
+                test_results.append((test_name, "Runtime Error"))
+                failed_tests.append(test_name)
 
-        if line.startswith("=========================== short test summary info"):
-            capture_details = False
-            continue
-
-        if capture_details:
-            if line.strip():
-                detail_lines.append(line)
-            continue
-
-        if line.startswith("FAILED "):
-            failed_test = line[len("FAILED ") :].split(" - ", 1)[0].strip()
-            if failed_test and failed_test not in failed_tests:
-                failed_tests.append(failed_test)
-            continue
-
-        if line.startswith("ERROR "):
-            error_name = line[len("ERROR ") :].strip()
-            if error_name and error_name not in failed_tests:
-                failed_tests.append(error_name)
-            continue
-
-        if line.startswith("E       "):
-            reason = line[len("E       ") :].strip()
-            if reason and reason not in reasons:
-                reasons.append(reason)
-
-    if not failed_tests and not reasons:
+    if not test_results:
         return output.strip() or "Tests failed, but no detailed failure message was captured."
 
-    report_lines = ["Tests failed."]
+    report_lines = ["Test results:", ""]
+    for test_name, status in test_results:
+        report_lines.append(f"- {test_name}: {status}")
 
     if failed_tests:
         report_lines.append("")
         report_lines.append("Failed tests:")
         for failed_test in failed_tests:
             report_lines.append(f"- {failed_test}")
-
-    if reasons:
-        report_lines.append("")
-        report_lines.append("Why it failed:")
-        for reason in reasons:
-            report_lines.append(f"- {reason}")
-
-    if detail_lines:
-        report_lines.append("")
-        report_lines.append("Failure details:")
-        report_lines.extend(detail_lines)
 
     return "\n".join(report_lines)
 
@@ -143,8 +115,9 @@ def main() -> int:
             )
         except subprocess.TimeoutExpired as exc:
             timeout_output = (exc.stdout or "") + (exc.stderr or "")
-            report = "Time Limit Exceeded\n\n"
-            report += f"The tests did not finish within {TIME_LIMIT_SECONDS:.1f} seconds."
+            report = "Test results:\n\n"
+            report += f"- all tests: Time Limit Exceeded\n\n"
+            report += f"Time limit: {TIME_LIMIT_SECONDS:.1f} seconds"
             if timeout_output.strip():
                 report += "\n\nCaptured output:\n" + timeout_output.strip()
             traceback_file.write_text(report + "\n")
@@ -158,7 +131,13 @@ def main() -> int:
             print("Accepted.")
         else:
             status = classify_failure(result.returncode, output)
-            report = f"{status}\n\n{build_failure_report(output)}\n"
+            report_body = build_failure_report(output)
+            if report_body == output.strip() or report_body.startswith("Tests failed, but no detailed"):
+                report = f"Test results:\n\n- all tests: {status}\n"
+                if output.strip():
+                    report += f"\nCaptured output:\n{output.strip()}\n"
+            else:
+                report = report_body + "\n"
             traceback_file.write_text(report)
             print(f"{status}. Details written to {traceback_file.name}.")
         return result.returncode

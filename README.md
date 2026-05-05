@@ -36,7 +36,8 @@ uv run grademe
 On success, `grademe` prints `Accepted.`.
 On failure, it prints a short status such as `Wrong Answer.`, `Compile Error.`,
 `Runtime Error.`, or `Time Limit Exceeded.` and writes a compact failure report
-to a file like `two_sum_traceback` in the current directory.
+to a file like `two_sum_traceback` in the current directory. The report is a
+simple per-test status list instead of a raw pytest traceback.
 
 ## Structure
 
