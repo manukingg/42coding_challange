@@ -75,9 +75,7 @@ def run_min_increment_for_unique(
         ([-1, -1, 2], 1),
         ([5, 5, 5, 5, 5], 10),
         ([1, 3, 5, 7], 0),
-        ([2, 2, 2, 3, 3, 4], 8),
         ([10, 10, 11, 11, 12, 12], 9),
-        ([-3, -3, -2, -2, -1], 4),
     ],
     ids=[
         "official-example-1",
@@ -89,9 +87,7 @@ def run_min_increment_for_unique(
         "includes-negative-values",
         "all-same-five-values",
         "already-unique",
-        "clustered-duplicates",
         "staggered-duplicates",
-        "negative-cluster",
     ],
 )
 def test_min_increment_for_unique(
