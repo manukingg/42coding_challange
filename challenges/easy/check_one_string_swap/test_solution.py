@@ -48,7 +48,7 @@ def compiled_check_one_string_swap() -> ctypes.CDLL:
         yield library
 
 
-def run_are_almost_equal(
+def run_check_one_string_swap(
     compiled_check_one_string_swap: ctypes.CDLL,
     s1: str,
     s2: str,
@@ -99,7 +99,7 @@ def test_are_almost_equal(
     s2: str,
     expected: bool,
 ) -> None:
-    result = run_are_almost_equal(compiled_check_one_string_swap, s1, s2)
+    result = run_check_one_string_swap(compiled_check_one_string_swap, s1, s2)
     assert result is expected, f"Expected {expected} for s1={s1!r}, s2={s2!r}, got {result}"
 
 
@@ -109,8 +109,8 @@ def test_are_almost_equal_is_symmetric(
     s1 = "converse"
     s2 = "convesre"
 
-    forward = run_are_almost_equal(compiled_check_one_string_swap, s1, s2)
-    backward = run_are_almost_equal(compiled_check_one_string_swap, s2, s1)
+    forward = run_check_one_string_swap(compiled_check_one_string_swap, s1, s2)
+    backward = run_check_one_string_swap(compiled_check_one_string_swap, s2, s1)
 
     assert forward is True, f"Expected True for s1={s1!r}, s2={s2!r}, got {forward}"
     assert backward is True, f"Expected True for s1={s2!r}, s2={s1!r}, got {backward}"
@@ -120,8 +120,8 @@ def test_are_almost_equal_rejects_three_mismatches(
     compiled_check_one_string_swap: ctypes.CDLL,
 ) -> None:
     s1 = "abcde"
-    s2 = "aecdb"
+    s2 = "badce"
 
-    result = run_are_almost_equal(compiled_check_one_string_swap, s1, s2)
+    result = run_check_one_string_swap(compiled_check_one_string_swap, s1, s2)
 
     assert result is False, f"Expected False for s1={s1!r}, s2={s2!r}, got {result}"
