@@ -108,6 +108,16 @@ def colorize_status(status: str) -> str:
     return f"{RED}{status}{RESET}"
 
 
+def normalize_output(value: str | bytes | None) -> str:
+    if value is None:
+        return ""
+
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+
+    return value
+
+
 def main() -> int:
     current_dir = Path.cwd().resolve()
     challenge_dir = find_challenge_dir(current_dir)
@@ -132,7 +142,7 @@ def main() -> int:
                 timeout=TIME_LIMIT_SECONDS,
             )
         except subprocess.TimeoutExpired as exc:
-            timeout_output = (exc.stdout or "") + (exc.stderr or "")
+            timeout_output = normalize_output(exc.stdout) + normalize_output(exc.stderr)
             report = "Test results:\n\n"
             report += f"- all tests: Time Limit Exceeded\n\n"
             report += f"Time limit: {TIME_LIMIT_SECONDS:.1f} seconds"
