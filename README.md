@@ -4,7 +4,13 @@ C coding challenge environment with a Python-based test runner built around `uv`
 
 ## Setup
 
-1. Install `uv`: https://docs.astral.sh/uv/
+1. Install `uv`:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+Alternatively, see the official docs: https://docs.astral.sh/uv/
 2. Make sure `gcc` is installed
 3. Sync the environment:
 
